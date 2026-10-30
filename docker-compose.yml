@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: credence-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: mercurysoftech_credence
+      MYSQL_USER: mercurysoftech_credence
+      MYSQL_PASSWORD: Credence@2026
+      MYSQL_ROOT_PASSWORD: root_password_123
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backend/sql/db_setup.sql:/docker-entrypoint-initdb.d/db_setup.sql:ro
+
+  web:
+    build: .
+    container_name: credence-web
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html/demo_4
+    environment:
+      - DB_HOST=db
+      - DB_NAME=mercurysoftech_credence
+      - DB_USER=mercurysoftech_credence
+      - DB_PASS=Credence@2026
+    depends_on:
+      - db
+
+volumes:
+  db_data:
